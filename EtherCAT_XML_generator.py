@@ -20,25 +20,28 @@ from collections import OrderedDict
 #_________________________________________________________________________
 # Customise the Master node
 def buildMasterNode(Master, config):
-	return True
+	# Modify Info -> Source
+	# How?
+
+	return Master
 
 
 #_________________________________________________________________________
 # Customise the Cyclic node
 def buildCyclicNode(Cyclic, config):
-	return True
+	return Cyclic
 
 
 #_________________________________________________________________________
 # Customise the ProcessImage node
 def buildProcessImageNode(ProcessImage, config):
-	return True
+	return ProcessImage
 
 
 #_________________________________________________________________________
 # Customise Slave nodes
 def buildSlaveNode(Slave, config):
-	return True
+	return Slave
 
 
 ##########################################################################
@@ -78,7 +81,7 @@ def main():
 	f.close()
 
 	# Customise node
-	# ...
+	Master = buildMasterNode(Master, config)
 
 	# Add as child of Config
 	ENI['EtherCATConfig']['Config'] = Master
@@ -96,14 +99,14 @@ def main():
 		f.close()
 
 		# Customise node
-		# ...
+		Slave = buildSlaveNode(Slave, config)
 
 		# Append slave node
 		Slaves.append(Slave['Slave'])
 
 	# Merge OrderedDicts
 	# See https://stackoverflow.com/questions/38987/how-to-merge-two-python-dictionaries-in-a-single-expression
-	ENI['EtherCATConfig']['Config'] = OrderedDict(**ENI['EtherCATConfig']['Config'], **{'Slave': Slaves})
+	ENI['EtherCATConfig']['Config'] = OrderedDict(ENI['EtherCATConfig']['Config'], **{'Slave': Slaves})
 
 
 	#_________________________________________________________________________
@@ -114,10 +117,10 @@ def main():
 	f.close()
 
 	# Customise node
-	# ...
+	Cyclic = buildCyclicNode(Cyclic, config)
 
 	# Add as child of Config
-	ENI['EtherCATConfig']['Config'] = OrderedDict(**ENI['EtherCATConfig']['Config'], **Cyclic)
+	ENI['EtherCATConfig']['Config'] = OrderedDict(ENI['EtherCATConfig']['Config'], **Cyclic)
 
 
 	#_________________________________________________________________________
@@ -128,10 +131,10 @@ def main():
 	f.close()
 
 	# Customise node
-	# ...
+	ProcessImage = buildProcessImageNode(ProcessImage, config)
 
 	# Add as child of Config
-	ENI['EtherCATConfig']['Config'] = OrderedDict(**ENI['EtherCATConfig']['Config'], **ProcessImage)
+	ENI['EtherCATConfig']['Config'] = OrderedDict(ENI['EtherCATConfig']['Config'], **ProcessImage)
 
 
 	#_________________________________________________________________________
