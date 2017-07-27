@@ -4,24 +4,6 @@
       </Inputs>
       <Outputs>
         <ByteSize>1536</ByteSize>
-        <Variable>
-          <Name>Outputs.Frm0Ctrl</Name>
-          <DataType>UINT</DataType>
-          <BitSize>16</BitSize>
-          <BitOffs>12160</BitOffs>
-        </Variable>
-        <Variable>
-          <Name>Outputs.Frm0WcCtrl</Name>
-          <DataType>UINT</DataType>
-          <BitSize>16</BitSize>
-          <BitOffs>12176</BitOffs>
-        </Variable>
-        <Variable>
-          <Name>Outputs.DevCtrl</Name>
-          <DataType>UINT</DataType>
-          <BitSize>16</BitSize>
-          <BitOffs>12272</BitOffs>
-        </Variable>
       </Outputs>
     </ProcessImage>
 

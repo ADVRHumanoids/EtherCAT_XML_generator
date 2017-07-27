@@ -1,0 +1,62 @@
+<Inputs>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.link pos</Name>
+          <DataType>REAL</DataType>
+          <BitSize>32</BitSize>
+          <BitOffs>208</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.motor pos</Name>
+          <DataType>REAL</DataType>
+          <BitSize>32</BitSize>
+          <BitOffs>240</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.link vel</Name>
+          <DataType>INT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>272</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.motor vel</Name>
+          <DataType>INT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>288</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.tor</Name>
+          <DataType>REAL</DataType>
+          <BitSize>32</BitSize>
+          <BitOffs>304</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.temperature</Name>
+          <DataType>UINT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>336</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.fault</Name>
+          <DataType>UINT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>352</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.rtt</Name>
+          <DataType>UINT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>368</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.op_idx_ack</Name>
+          <DataType>UINT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>384</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.aux</Name>
+          <DataType>REAL</DataType>
+          <BitSize>32</BitSize>
+          <BitOffs>400</BitOffs>
+        </Variable>
+</Inputs>

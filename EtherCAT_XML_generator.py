@@ -10,7 +10,9 @@
 # xmldict: python3-xmltodict under Debian/Ubuntu
 import xmltodict
 
+# Python native
 from collections import OrderedDict
+import re
 
 
 ##########################################################################
@@ -59,6 +61,62 @@ def buildCyclicNode(Cyclic, config):
 #_________________________________________________________________________
 # Customise the ProcessImage node
 def buildProcessImageNode(ProcessImage, config):
+	# Main node shorthand
+	p = ProcessImage['ProcessImage']
+	
+	# Add empty Variable lists to Inputs and Outputs
+	p['Inputs']	= OrderedDict(p['Inputs'], **{'Variable': []})
+	p['Outputs']	= OrderedDict(p['Outputs'], **{'Variable': []})
+	
+	for i in range(0, config['slaves']['N']):
+		# Get Receive and Transmit PDO templates for this slave
+		if config['slaves']['types'][i] == "Slave_phil_boards":
+			f = open('templates/ProcessImage_Outputs_Receive_PDO_phil_boards.xml')
+			Receive_PDO = xmltodict.parse(f.read())
+			f.close()
+			f = open('templates/ProcessImage_Inputs_Transmit_PDO_phil_boards.xml')
+			Transmit_PDO = xmltodict.parse(f.read())
+			f.close()
+			
+		elif config['slaves']['types'][i] == "Slave_centauro_med":
+			print("Centauro boards not fully supported yet. Aborting.")
+			quit()
+			
+		# Modify the Transmit_PDO variables
+		for var in Transmit_PDO['Inputs']['Variable']:
+			# Regular expression replace on the name
+			var['Name'] = re.sub('^Box\.', 'Box ' + str(i+1) + '.', var['Name'])
+			
+			# Calculate correct byte offset
+			# Each board's first field has offset 208 + i*224 (where i=0,1,...)
+			# i.e. each field should be offset by i*224
+			var['BitOffs'] = int(var['BitOffs']) + i * 224
+
+		# Add Transmit PDO to Inputs
+		p['Inputs']['Variable'] = p['Inputs']['Variable'] + Transmit_PDO['Inputs']['Variable']
+		
+		# Modify the Receive_PDO variables
+		for var in Receive_PDO['Outputs']['Variable']:
+			# Regular expression replace on the name
+			var['Name'] = re.sub('^Box\.', 'Box ' + str(i+1) + '.', var['Name'])
+			
+			# Calculate correct byte offset
+			# Each board's first field has offset 208 + i*224 (where i=0,1,...)
+			# i.e. each field should be offset by i*224
+			var['BitOffs'] = int(var['BitOffs']) + i * 224
+		
+		# Add Receive PDO to Outputs
+		p['Outputs']['Variable'] = p['Outputs']['Variable'] + Receive_PDO['Outputs']['Variable']
+		
+	# Add the static variables to the Output variables
+	f = open('templates/ProcessImage_Outputs_static_variables.xml')
+	Outputs_static_variables = xmltodict.parse(f.read())
+	f.close()
+	p['Outputs']['Variable'] = p['Outputs']['Variable'] + Outputs_static_variables['Outputs']['Variable']
+	
+	# Set main ProcessImage node back into ProcessImage object (required for added fields)
+	ProcessImage['ProcessImage'] = p
+	
 	return ProcessImage
 
 
@@ -114,7 +172,7 @@ def buildSlaveNode(Slave, i, config):
 			InitCmd['Data'] = new + InitCmd['Data'][len(new):]
 			#print("Result is " + InitCmd['Data'])
 			
-		# Place back modified InitCmd node
+		# Place back modified InitCmd node (required for added fields)
 		s['InitCmds']['InitCmd'][j] = InitCmd
 		
 	
