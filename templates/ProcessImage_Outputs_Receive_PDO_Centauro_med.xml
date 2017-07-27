@@ -1,0 +1,74 @@
+<Outputs>
+        <Variable>
+          <Name>Box.Receive PDO Mapping.Pos_ref</Name>
+          <DataType>REAL</DataType>
+          <BitSize>32</BitSize>
+          <BitOffs>208</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Receive PDO Mapping.Vel_ref</Name>
+          <DataType>INT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>240</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Receive PDO Mapping.Tor_ref</Name>
+          <DataType>INT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>256</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Receive PDO Mapping.Gain_0</Name>
+          <DataType>UINT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>272</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Receive PDO Mapping.Gain_1</Name>
+          <DataType>UINT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>288</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Receive PDO Mapping.Gain_2</Name>
+          <DataType>UINT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>304</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Receive PDO Mapping.Gain_3</Name>
+          <DataType>UINT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>320</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Receive PDO Mapping.Gain_4</Name>
+          <DataType>UINT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>336</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Receive PDO Mapping.Fault_Ack</Name>
+          <DataType>UINT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>352</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Receive PDO Mapping.ts</Name>
+          <DataType>UINT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>368</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Receive PDO Mapping.Op_idx_aux</Name>
+          <DataType>UINT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>384</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Receive PDO Mapping.Aux</Name>
+          <DataType>REAL</DataType>
+          <BitSize>32</BitSize>
+          <BitOffs>400</BitOffs>
+        </Variable>
+</Outputs>

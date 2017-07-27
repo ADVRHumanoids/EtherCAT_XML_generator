@@ -1,0 +1,62 @@
+<Inputs>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.Link_position</Name>
+          <DataType>REAL</DataType>
+          <BitSize>32</BitSize>
+          <BitOffs>208</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.Motor_position</Name>
+          <DataType>REAL</DataType>
+          <BitSize>32</BitSize>
+          <BitOffs>240</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.Link_velocity</Name>
+          <DataType>INT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>272</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.Motor_velocity</Name>
+          <DataType>INT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>288</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.Torque</Name>
+          <DataType>REAL</DataType>
+          <BitSize>32</BitSize>
+          <BitOffs>304</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.Max_temperature</Name>
+          <DataType>UINT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>336</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.Fault</Name>
+          <DataType>UINT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>352</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.Rtt</Name>
+          <DataType>UINT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>368</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.Op_idx_ack</Name>
+          <DataType>UINT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>384</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.Transmit PDO Mapping.Aux</Name>
+          <DataType>REAL</DataType>
+          <BitSize>32</BitSize>
+          <BitOffs>400</BitOffs>
+        </Variable>
+</Inputs>

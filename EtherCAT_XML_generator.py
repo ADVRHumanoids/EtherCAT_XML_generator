@@ -44,13 +44,16 @@ def buildCyclicNode(Cyclic, config):
 		Cmd = c['Frame']['Cmd'][i]
 		
 		# Change the child nodes depending on the value of Cmd
-		if Cmd['Cmd'] == 12:
+		if int(Cmd['Cmd']) == 12:
 			Cmd['DataLength']	= 3 * DataLength
 			Cmd['Cnt']		= 3 * N
-		elif Cmd['Cmd'] == 9:
+		elif int(Cmd['Cmd']) == 7 or int(Cmd['Cmd']) == 9:
 			Cmd['Cnt']		= N
 			Cmd['InputOffs']	= DataLength + N * DataLength
 			Cmd['OutputOffs']	= DataLength + N * DataLength
+			
+		# Set Cmd back into c
+		c['Frame']['Cmd'][i] = Cmd
 			
 	# Set Cyclic node back into Cyclic object (required for added fields)
 	Cyclic['Cyclic'] = c
@@ -77,11 +80,15 @@ def buildProcessImageNode(ProcessImage, config):
 			f.close()
 			f = open('templates/ProcessImage_Inputs_Transmit_PDO_phil_boards.xml')
 			Transmit_PDO = xmltodict.parse(f.read())
-			f.close()
-			
+			f.close()	
+		
 		elif config['slaves']['types'][i] == "Slave_centauro_med":
-			print("Centauro boards not fully supported yet. Aborting.")
-			quit()
+			f = open('templates/ProcessImage_Outputs_Receive_PDO_Centauro_med.xml')
+			Receive_PDO = xmltodict.parse(f.read())
+			f.close()
+			f = open('templates/ProcessImage_Inputs_Transmit_PDO_Centauro_med.xml')
+			Transmit_PDO = xmltodict.parse(f.read())
+			f.close()
 			
 		# Modify the Inputs/Transmit_PDO variables
 		for var in Transmit_PDO['Inputs']['Variable']:
@@ -238,10 +245,10 @@ def main():
 	# (*.xml) file
 
 	config = {	
-		'slaves':	{	'N': 2,
-					'types': [	'Slave_phil_boards',
-							'Slave_phil_boards',
-							'Slave_phil_boards'	],
+		'slaves':	{	'N': 3,
+					'types': [	'Slave_centauro_med',
+							'Slave_centauro_med',
+							'Slave_centauro_med'	],
 					'DataLength_per_board': 28
 				}
 	}
