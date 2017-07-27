@@ -40,7 +40,25 @@ def buildProcessImageNode(ProcessImage, config):
 
 #_________________________________________________________________________
 # Customise Slave nodes
-def buildSlaveNode(Slave, config):
+def buildSlaveNode(Slave, i, config):
+	# Main Slave node shorthand
+	s = Slave['Slave']
+
+	# Modify Info node
+	s['Info']['Name']		= 'Box ' + str(i+1)
+	s['Info']['PhysAddr']		= int(s['Info']['PhysAddr']) + i
+	s['Info']['AutoIncAddr']	= (65536 - i) % 65536
+	
+	# Modify ProcessData node
+	s['ProcessData']['Send']['BitStart'] = int(s['ProcessData']['Send']['BitStart']) + i * int(s['ProcessData']['Send']['BitLength'])
+	s['ProcessData']['Recv']['BitStart'] = int(s['ProcessData']['Recv']['BitStart']) + i * int(s['ProcessData']['Recv']['BitLength'])
+
+	# Modify InitCmds
+	# ...
+	
+	# Set main slave node back into Slave object
+	Slave['Slave'] = s
+
 	return Slave
 
 
@@ -56,7 +74,7 @@ def main():
 	# (*.xml) file
 
 	config = {	
-		'slaves':	{	'N': 2,
+		'slaves':	{	'N': 3,
 					'types': [	'Slave_phil_boards',
 							'Slave_phil_boards',
 							'Slave_phil_boards'	]
@@ -99,7 +117,7 @@ def main():
 		f.close()
 
 		# Customise node
-		Slave = buildSlaveNode(Slave, config)
+		Slave = buildSlaveNode(Slave, i, config)
 
 		# Append slave node
 		Slaves.append(Slave['Slave'])
