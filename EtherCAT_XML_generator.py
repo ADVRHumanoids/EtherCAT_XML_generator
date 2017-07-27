@@ -29,6 +29,30 @@ def buildMasterNode(Master, config):
 #_________________________________________________________________________
 # Customise the Cyclic node
 def buildCyclicNode(Cyclic, config):
+	# Cyclic node shorthand
+	c = Cyclic['Cyclic']
+	
+	# Get number of boards and datalength per board
+	N		= int(config['slaves']['N'])
+	DataLength	= int(config['slaves']['DataLength_per_board'])
+	
+	# Modify both <Cmd> entries
+	for i in range(0, len(c['Frame']['Cmd'])):
+		# Get node
+		Cmd = c['Frame']['Cmd'][i]
+		
+		# Change the child nodes depending on the value of Cmd
+		if Cmd['Cmd'] == 12:
+			Cmd['DataLength']	= 3 * DataLength
+			Cmd['Cnt']		= 3 * N
+		elif Cmd['Cmd'] == 9:
+			Cmd['Cnt']		= N
+			Cmd['InputOffs']	= DataLength + N * DataLength
+			Cmd['OutputOffs']	= DataLength + N * DataLength
+			
+	# Set Cyclic node back into Cyclic object (required for added fields)
+	Cyclic['Cyclic'] = c
+
 	return Cyclic
 
 
@@ -43,20 +67,72 @@ def buildProcessImageNode(ProcessImage, config):
 def buildSlaveNode(Slave, i, config):
 	# Main Slave node shorthand
 	s = Slave['Slave']
+	
+	# Get datalength per board
+	DataLength = int(config['slaves']['DataLength_per_board'])
+	
+	# Calculate things we need multiple times
+	PhysAddr	= int(s['Info']['PhysAddr']) + i
+	# AutoIncAddr/Adp
+	Adp		= (65536 - i) % 65536
 
 	# Modify Info node
 	s['Info']['Name']		= 'Box ' + str(i+1)
-	s['Info']['PhysAddr']		= int(s['Info']['PhysAddr']) + i
-	s['Info']['AutoIncAddr']	= (65536 - i) % 65536
+	s['Info']['PhysAddr']		= PhysAddr
+	s['Info']['AutoIncAddr']	= Adp
 	
 	# Modify ProcessData node
 	s['ProcessData']['Send']['BitStart'] = int(s['ProcessData']['Send']['BitStart']) + i * int(s['ProcessData']['Send']['BitLength'])
 	s['ProcessData']['Recv']['BitStart'] = int(s['ProcessData']['Recv']['BitStart']) + i * int(s['ProcessData']['Recv']['BitLength'])
 
 	# Modify InitCmds
-	# ...
+	# We have different changes depending on the <Cmd> node value of the InitCmd
+	for j in range(0, len(s['InitCmds']['InitCmd'])):
+		# Get node
+		InitCmd = s['InitCmds']['InitCmd'][j]
+		
+		# Replace Adp node for Cmd 1, 2, 4 and 5
+		if int(InitCmd['Cmd']) == 1 or int(InitCmd['Cmd']) == 2:
+			InitCmd['Adp'] = Adp
+		elif int(InitCmd['Cmd']) == 4 or int(InitCmd['Cmd']) == 5:
+			InitCmd['Adp'] = PhysAddr
+			
+		# Modify Data node (counting field in hex)
+		# e903, ea03, eb03, ... is 233+i in hex
+		if InitCmd['Data'] == "e903":
+			InitCmd['Data'] = hex(233+i)[2:] + "03"
+		
+		# Modify Data node
+		# 000000011c0000070012000201000000,
+		# 1c0000011c0000070012000201000000,
+		# 380000011c0000070016000101000000
+		# First 2 chars are i * DataLength in hex
+		# We do this for two fields which follow the same pattern
+		if InitCmd['Data'] == "000000011c0000070012000201000000" or InitCmd['Data'] == "000000011c0000070016000101000000":
+			new = hex(i * DataLength)[2:]
+			#print("Found, replacing first chars by " + new)
+			InitCmd['Data'] = new + InitCmd['Data'][len(new):]
+			#print("Result is " + InitCmd['Data'])
+			
+		# Place back modified InitCmd node
+		s['InitCmds']['InitCmd'][j] = InitCmd
+		
 	
-	# Set main slave node back into Slave object
+	# Add a PreviousPort node if this is not the first Slave
+	if i > 0:
+		# Get PreviousPort template
+		f = open('templates/PreviousPort.xml')
+		PreviousPort = xmltodict.parse(f.read())
+		f.close()
+		
+		# Modify appropriately
+		# It refers to the previous board, i.e. address - 1
+		PreviousPort['PreviousPort']['PhysAddr'] = PhysAddr - 1
+		
+		# Append to slave
+		s = OrderedDict(s, **PreviousPort)
+	
+	# Set main slave node back into Slave object (required for added fields)
 	Slave['Slave'] = s
 
 	return Slave
@@ -74,10 +150,11 @@ def main():
 	# (*.xml) file
 
 	config = {	
-		'slaves':	{	'N': 3,
+		'slaves':	{	'N': 2,
 					'types': [	'Slave_phil_boards',
 							'Slave_phil_boards',
-							'Slave_phil_boards'	]
+							'Slave_phil_boards'	],
+					'DataLength_per_board': 28
 				}
 	}
 

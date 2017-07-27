@@ -8,8 +8,8 @@
           <State>OP</State>
           <Cmd>12</Cmd>
           <Addr>16777216</Addr>
-          <DataLength>84</DataLength>
-          <Cnt>9</Cnt>
+          <DataLength>56</DataLength>
+          <Cnt>6</Cnt>
           <InputOffs>16</InputOffs>
           <OutputOffs>16</OutputOffs>
         </Cmd>
@@ -21,9 +21,9 @@
           <Adp>0</Adp>
           <Ado>304</Ado>
           <DataLength>2</DataLength>
-          <Cnt>3</Cnt>
-          <InputOffs>112</InputOffs>
-          <OutputOffs>112</OutputOffs>
+          <Cnt>2</Cnt>
+          <InputOffs>84</InputOffs>
+          <OutputOffs>84</OutputOffs>
         </Cmd>
       </Frame>
     </Cyclic>
