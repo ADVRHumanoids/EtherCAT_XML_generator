@@ -68,6 +68,7 @@ def buildProcessImageNode(ProcessImage, config):
 	p['Inputs']	= OrderedDict(p['Inputs'], **{'Variable': []})
 	p['Outputs']	= OrderedDict(p['Outputs'], **{'Variable': []})
 	
+	# For all slaves..
 	for i in range(0, config['slaves']['N']):
 		# Get Receive and Transmit PDO templates for this slave
 		if config['slaves']['types'][i] == "Slave_phil_boards":
@@ -82,7 +83,7 @@ def buildProcessImageNode(ProcessImage, config):
 			print("Centauro boards not fully supported yet. Aborting.")
 			quit()
 			
-		# Modify the Transmit_PDO variables
+		# Modify the Inputs/Transmit_PDO variables
 		for var in Transmit_PDO['Inputs']['Variable']:
 			# Regular expression replace on the name
 			var['Name'] = re.sub('^Box\.', 'Box ' + str(i+1) + '.', var['Name'])
@@ -95,7 +96,7 @@ def buildProcessImageNode(ProcessImage, config):
 		# Add Transmit PDO to Inputs
 		p['Inputs']['Variable'] = p['Inputs']['Variable'] + Transmit_PDO['Inputs']['Variable']
 		
-		# Modify the Receive_PDO variables
+		# Modify the Outputs/Receive_PDO variables
 		for var in Receive_PDO['Outputs']['Variable']:
 			# Regular expression replace on the name
 			var['Name'] = re.sub('^Box\.', 'Box ' + str(i+1) + '.', var['Name'])
@@ -107,6 +108,35 @@ def buildProcessImageNode(ProcessImage, config):
 		
 		# Add Receive PDO to Outputs
 		p['Outputs']['Variable'] = p['Outputs']['Variable'] + Receive_PDO['Outputs']['Variable']
+		
+	# Another loop over all slaves to preserve some node order
+	# We don't try to preserve order within the WcState and InputToggle input variables themselves
+	for i in range(0, config['slaves']['N']):
+		# Input WcState variables
+		f = open('templates/ProcessImage_Inputs_WcState.xml')
+		WcState = xmltodict.parse(f.read())
+		f.close()
+		for var in WcState['Inputs']['Variable']:
+			var['Name'] = re.sub('^Box\.', 'Box ' + str(i+1) + '.', var['Name'])
+		p['Inputs']['Variable'] = p['Inputs']['Variable'] + WcState['Inputs']['Variable']
+		
+	# Add the static variables to the Input variables
+	f = open('templates/ProcessImage_Inputs_static_variables.xml')
+	Inputs_static_variables = xmltodict.parse(f.read())
+	f.close()
+	p['Inputs']['Variable'] = p['Inputs']['Variable'] + Inputs_static_variables['Inputs']['Variable']
+		
+	# Another loop over all slaves to preserve some node order
+	# We don't try to preserve order within the WcState and InputToggle input variables themselves
+	for i in range(0, config['slaves']['N']):
+		# Input InfoData variables
+		f = open('templates/ProcessImage_Inputs_InfoData.xml')
+		InfoData = xmltodict.parse(f.read())
+		f.close()
+		for var in InfoData['Inputs']['Variable']:
+			var['Name']	= re.sub('^Box\.', 'Box ' + str(i+1) + '.', var['Name'])
+			var['BitOffs']	= int(var['BitOffs']) + i * 80
+		p['Inputs']['Variable'] = p['Inputs']['Variable'] + InfoData['Inputs']['Variable']
 		
 	# Add the static variables to the Output variables
 	f = open('templates/ProcessImage_Outputs_static_variables.xml')

@@ -1,0 +1,14 @@
+<Inputs>
+        <Variable>
+          <Name>Box.InfoData.State</Name>
+          <DataType>UINT</DataType>
+          <BitSize>16</BitSize>
+          <BitOffs>12384</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.InfoData.AdsAddr</Name>
+          <DataType>AMSADDRESS</DataType>
+          <BitSize>64</BitSize>
+          <BitOffs>12400</BitOffs>
+        </Variable>
+</Inputs>

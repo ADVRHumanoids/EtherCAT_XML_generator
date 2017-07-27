@@ -1,0 +1,14 @@
+<Inputs>
+        <Variable>
+          <Name>Box.WcState.WcState</Name>
+          <DataType>BOOL</DataType>
+          <BitSize>1</BitSize>
+          <BitOffs>12176</BitOffs>
+        </Variable>
+        <Variable>
+          <Name>Box.WcState.InputToggle</Name>
+          <DataType>BOOL</DataType>
+          <BitSize>1</BitSize>
+          <BitOffs>12192</BitOffs>
+        </Variable>
+</Inputs>
