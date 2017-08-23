@@ -1,0 +1,16 @@
+slaves:
+    # number of joints
+    N: 3
+
+    # joint names
+    names: [    'Some joint',
+                'Some other joint',
+                'Yet another joint'    ]
+
+    # joint types - "Slave_centauro_med" or "Slave_phil_boards"
+    types: [    'Slave_centauro_med',
+                'Slave_centauro_med',
+                'Slave_centauro_med'    ]
+
+    # Board data length in bytes, no need to touch this
+    DataLength_per_board: 28

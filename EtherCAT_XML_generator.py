@@ -14,6 +14,7 @@ import xmltodict
 from collections import OrderedDict
 import re
 import sys
+import yaml
 
 
 ##########################################################################
@@ -257,35 +258,48 @@ def main():
 	# Configuration of the to be generated EtherCAT Network Information (ENI)
 	# (*.xml) file
 
-	config = {	
-		'slaves':	{	# number of joints
-					'N': 3,
-					# joint names
-					'names': [	'Some joint',
-							'Some other joint',
-							'Yet another joint'	],
-					# joint types: "Slave_centauro_med" or "Slave_phil_boards"
-					'types': [	'Slave_centauro_med',
-							'Slave_centauro_med',
-							'Slave_centauro_med'	],
-					# Board data length in bytes, no need to touch this
-					'DataLength_per_board': 28
-				}
-	}
+	# Read the configuration file in YAML
+	# Using JSON would be easier since Python has a built-in encoder, but
+	# JSON does not support comments, which is extremely daft
+	f = open('config.yaml', 'r')
+	config = yaml.load(f)
+	f.close()
 
 
 	#_________________________________________________________________________
 	# Check configuration
+
+	# Existence of 'slaves' node
+	if 'slaves' not in config:
+		sys.exit("Invalid config: No 'slaves' node. Aborting.")
+
+	# Existence of other fields
+	if 'N' not in config['slaves'] or 'types' not in config['slaves']:
+		sys.exit("Invalid config: Required slave fields 'N' and/or 'types' do not exist. Aborting.")
+
+	# Value of N
+	if int(config['slaves']['N']) <= 0:
+		sys.exit("Invalid config: Bad value for N. Aborting.")
+
+	# Number of types
 	if len(config['slaves']['types']) != config['slaves']['N']:
 		sys.exit("Number of slave types does not equal the number of slaves. Aborting.")
-	if len(config['slaves']['names']) != config['slaves']['N']:
+
+	# Names: Check if present, otherwise autogenerate
+	if 'names' not in config['slaves'] or len(config['slaves']['names']) != config['slaves']['N']:
 		print("-----")
 		print("Warning: Autogenerating names as there are not exactly N names specified. Generated names:")
 		config['slaves']['names'] = []
 		for i in range(0, config['slaves']['N']):
 			config['slaves']['names'].append('Box ' + str(i+1) + ' (' + config['slaves']['types'][i] + ')')
-		print(config['slaves']['names'])
+			print(str(i) + ": " + config['slaves']['names'][-1])
 		print("-----")
+
+
+	#_________________________________________________________________________
+	# Status
+	
+	print("Generating ENI file for " + str(config['slaves']['N']) + " boards..")
 
 
 	#_________________________________________________________________________
@@ -369,6 +383,7 @@ def main():
 	fout.write(xmltodict.unparse(ENI, pretty=True))
 	fout.close()
 
+	print("Finished. Try not to break the robot.")
 	sys.exit(0)
 
 
