@@ -261,7 +261,11 @@ def main():
 	# Read the configuration file in YAML
 	# Using JSON would be easier since Python has a built-in encoder, but
 	# JSON does not support comments, which is extremely daft
-	f = open('config.yaml', 'r')
+	if len(sys.argv) > 1:
+		f = open(sys.argv[1], 'r')
+	else:
+		print("Warning: Trying to load default config from config.yaml..")
+		f = open('config.yaml', 'r')
 	config = yaml.load(f)
 	f.close()
 
