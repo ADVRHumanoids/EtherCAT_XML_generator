@@ -73,6 +73,9 @@ def buildProcessImageNode(ProcessImage, config):
 	
 	# For all slaves..
 	for i in range(0, config['slaves']['N']):
+		# Get the Slave name
+		slaveName = config['slaves']['names'][i]
+
 		# Get Receive and Transmit PDO templates for this slave
 		if config['slaves']['types'][i] == "Slave_phil_boards":
 			f = open('templates/ProcessImage_Outputs_Receive_PDO_phil_boards.xml')
@@ -93,7 +96,7 @@ def buildProcessImageNode(ProcessImage, config):
 		# Modify the Inputs/Transmit_PDO variables
 		for var in Transmit_PDO['Inputs']['Variable']:
 			# Regular expression replace on the name
-			var['Name'] = re.sub('^Box\.', 'Box ' + str(i+1) + '.', var['Name'])
+			var['Name'] = re.sub('^Box\.', slaveName + '.', var['Name'])
 			
 			# Calculate correct byte offset
 			# Each board's first field has offset 208 + i*224 (where i=0,1,...)
@@ -106,7 +109,7 @@ def buildProcessImageNode(ProcessImage, config):
 		# Modify the Outputs/Receive_PDO variables
 		for var in Receive_PDO['Outputs']['Variable']:
 			# Regular expression replace on the name
-			var['Name'] = re.sub('^Box\.', 'Box ' + str(i+1) + '.', var['Name'])
+			var['Name'] = re.sub('^Box\.', slaveName + '.', var['Name'])
 			
 			# Calculate correct byte offset
 			# Each board's first field has offset 208 + i*224 (where i=0,1,...)
@@ -119,12 +122,15 @@ def buildProcessImageNode(ProcessImage, config):
 	# Another loop over all slaves to preserve some node order
 	# We don't try to preserve order within the WcState and InputToggle input variables themselves
 	for i in range(0, config['slaves']['N']):
+		# Get the Slave name
+		slaveName = config['slaves']['names'][i]
+
 		# Input WcState variables
 		f = open('templates/ProcessImage_Inputs_WcState.xml')
 		WcState = xmltodict.parse(f.read())
 		f.close()
 		for var in WcState['Inputs']['Variable']:
-			var['Name'] = re.sub('^Box\.', 'Box ' + str(i+1) + '.', var['Name'])
+			var['Name'] = re.sub('^Box\.', slaveName + '.', var['Name'])
 		p['Inputs']['Variable'] = p['Inputs']['Variable'] + WcState['Inputs']['Variable']
 		
 	# Add the static variables to the Input variables
@@ -136,12 +142,15 @@ def buildProcessImageNode(ProcessImage, config):
 	# Another loop over all slaves to preserve some node order
 	# We don't try to preserve order within the WcState and InputToggle input variables themselves
 	for i in range(0, config['slaves']['N']):
+		# Get the Slave name
+		slaveName = config['slaves']['names'][i]
+
 		# Input InfoData variables
 		f = open('templates/ProcessImage_Inputs_InfoData.xml')
 		InfoData = xmltodict.parse(f.read())
 		f.close()
 		for var in InfoData['Inputs']['Variable']:
-			var['Name']	= re.sub('^Box\.', 'Box ' + str(i+1) + '.', var['Name'])
+			var['Name']	= re.sub('^Box\.', slaveName + '.', var['Name'])
 			var['BitOffs']	= int(var['BitOffs']) + i * 80
 		p['Inputs']['Variable'] = p['Inputs']['Variable'] + InfoData['Inputs']['Variable']
 		
@@ -171,8 +180,11 @@ def buildSlaveNode(Slave, i, config):
 	# AutoIncAddr/Adp
 	Adp		= (65536 - i) % 65536
 
+	# Get the Slave name
+	slaveName = config['slaves']['names'][i]
+
 	# Modify Info node
-	s['Info']['Name']		= 'Box ' + str(i+1)
+	s['Info']['Name']		= slaveName
 	s['Info']['PhysAddr']		= PhysAddr
 	s['Info']['AutoIncAddr']	= Adp
 	
@@ -246,10 +258,13 @@ def main():
 
 	config = {	
 		'slaves':	{	'N': 3,
+					'names': [	'Some joint',
+							'Some other joint',
+							'Yet another joint'	],
 					'types': [	'Slave_centauro_med',
 							'Slave_centauro_med',
 							'Slave_centauro_med'	],
-					'DataLength_per_board': 28
+					'DataLength_per_board': 28 # bytes
 				}
 	}
 
