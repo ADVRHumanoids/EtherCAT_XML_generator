@@ -13,6 +13,7 @@ import xmltodict
 # Python native
 from collections import OrderedDict
 import re
+import sys
 
 
 ##########################################################################
@@ -257,16 +258,34 @@ def main():
 	# (*.xml) file
 
 	config = {	
-		'slaves':	{	'N': 3,
+		'slaves':	{	# number of joints
+					'N': 3,
+					# joint names
 					'names': [	'Some joint',
 							'Some other joint',
 							'Yet another joint'	],
+					# joint types: "Slave_centauro_med" or "Slave_phil_boards"
 					'types': [	'Slave_centauro_med',
 							'Slave_centauro_med',
 							'Slave_centauro_med'	],
-					'DataLength_per_board': 28 # bytes
+					# Board data length in bytes, no need to touch this
+					'DataLength_per_board': 28
 				}
 	}
+
+
+	#_________________________________________________________________________
+	# Check configuration
+	if len(config['slaves']['types']) != config['slaves']['N']:
+		sys.exit("Number of slave types does not equal the number of slaves. Aborting.")
+	if len(config['slaves']['names']) != config['slaves']['N']:
+		print("-----")
+		print("Warning: Autogenerating names as there are not exactly N names specified. Generated names:")
+		config['slaves']['names'] = []
+		for i in range(0, config['slaves']['N']):
+			config['slaves']['names'].append('Box ' + str(i+1) + ' (' + config['slaves']['types'][i] + ')')
+		print(config['slaves']['names'])
+		print("-----")
 
 
 	#_________________________________________________________________________
@@ -349,6 +368,8 @@ def main():
 	fout = open("ENI.xml", 'w')
 	fout.write(xmltodict.unparse(ENI, pretty=True))
 	fout.close()
+
+	sys.exit(0)
 
 
 #_________________________________________________________________________
