@@ -47,12 +47,12 @@ def buildCyclicNode(Cyclic, config):
 		
 		# Change the child nodes depending on the value of Cmd
 		if int(Cmd['Cmd']) == 12:
-			Cmd['DataLength']	= 3 * DataLength
+			Cmd['DataLength']	= N * DataLength
 			Cmd['Cnt']		= 3 * N
 		elif int(Cmd['Cmd']) == 7 or int(Cmd['Cmd']) == 9:
 			Cmd['Cnt']		= N
-			Cmd['InputOffs']	= DataLength + N * DataLength
-			Cmd['OutputOffs']	= DataLength + N * DataLength
+			Cmd['InputOffs']	= (N + 1) * DataLength
+			Cmd['OutputOffs']	= (N + 1) * DataLength
 			
 		# Set Cmd back into c
 		c['Frame']['Cmd'][i] = Cmd
